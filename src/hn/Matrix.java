@@ -3,28 +3,27 @@ package hn;
 import java.util.stream.IntStream;
 
 public class Matrix {
-    private double data[][];
+    private final double[][] data;
 
     enum ScalarOperation {ADD, SUBTRACT, MULTIPLY, DIVIDE}
-
-    ;
 
     public Matrix(int rows, int cols) {
         data = new double[rows][cols];
     }
 
-    public Matrix(double data[][]) {
+    public Matrix(double[][] data) {
         this.data = new double[data.length][data[0].length];
         IntStream.range(0, this.data.length).forEach(row ->
-                IntStream.range(0, this.data[0].length).forEach(column -> this.data[row][column] = data[row][column]));
+                IntStream.range(0, this.data[0].length).forEach(column ->
+                        this.data[row][column] = data[row][column]));
     }
 
     public Matrix add(Matrix matrix) {
         if ((data.length != matrix.data.length) || (data[0].length != matrix.data[0].length)) {
-            throw new RuntimeException("Matrices must hae matching sizes");
+            throw new RuntimeException("Matrices must have matching sizes");
         }
 
-        double returnData[][] = new double[data.length][data[0].length];
+        double[][] returnData = new double[data.length][data[0].length];
         IntStream.range(0, data.length).forEach(row ->
                 IntStream.range(0, data[0].length).forEach(column ->
                         returnData[row][column] = data[row][column] + matrix.data[row][column]));
@@ -41,7 +40,7 @@ public class Matrix {
             throw new RuntimeException("Matrices must have matching inner dimension");
         }
 
-        double returnData[][] = new double[data.length][matrix.data[0].length];
+        double[][] returnData = new double[data.length][matrix.data[0].length];
         IntStream.range(0, data.length).forEach(row ->
                 IntStream.range(0, matrix.data[0].length).forEach(column -> {
                     double result = 0;
@@ -56,7 +55,7 @@ public class Matrix {
     }
 
     public Matrix scalarOperation(int x, ScalarOperation scalarOperation) {
-        double returnData[][] = new double[data.length][data[0].length];
+        double[][] returnData = new double[data.length][data[0].length];
         IntStream.range(0, data.length).forEach(row ->
                 IntStream.range(0, data[0].length).forEach(column -> {
                     switch (scalarOperation) {
@@ -84,7 +83,7 @@ public class Matrix {
     }
 
     public Matrix transpose() {
-        double returnData[][] = new double[data[0].length][data.length];
+        double[][] returnData = new double[data[0].length][data.length];
         IntStream.range(0, data.length).forEach(row ->
                 IntStream.range(0, data[0].length).forEach(column ->
                         returnData[column][row] = data[row][column]));
@@ -107,11 +106,10 @@ public class Matrix {
         return returnValue;
     }
 
-    public Matrix clear() {
+    public void clear() {
         IntStream.range(0, data.length).forEach(row ->
                 IntStream.range(0, data[0].length).forEach(column ->
                         data[row][column] = 0));
-        return this;
     }
 
     public static Matrix toRowMatrix(double[] array) {
@@ -138,7 +136,7 @@ public class Matrix {
     }
 
     public double[] flatten() {
-        double returnValue[] = new double[data.length * data[0].length];
+        double[] returnValue = new double[data.length * data[0].length];
         int i = 0;
         for (int row = 0; row < data.length; row++) {
             for (int column = 0; column < data[0].length; column++) {
@@ -150,9 +148,9 @@ public class Matrix {
 
     public double[][] getData() {return data;}
 
-    public static Matrix getMatrix(double data[], int numbOfRows) {
+    public static Matrix getMatrix(double[] data, int numbOfRows) {
         if (data.length % numbOfRows != 0) {
-            throw new RuntimeException("Size of data not divisible by nubmer of rows");
+            throw new RuntimeException("Size of data not divisible by number of rows");
         }
 
         Matrix drawingMatrix = new Matrix(numbOfRows, data.length / numbOfRows);
@@ -180,7 +178,7 @@ public class Matrix {
         StringBuilder headingSb = new StringBuilder();
 
         headingSb.append("   |");
-        IntStream.range(0, data[0].length).forEach(x -> headingSb.append(" " + columnLabel + String.format("%2d", x)));
+        IntStream.range(0, data[0].length).forEach(x -> headingSb.append(String.format(" %s%2d", columnLabel, x)));
         headingSb.append("\n");
 
         StringBuilder bodySb = new StringBuilder();
@@ -188,16 +186,10 @@ public class Matrix {
         bodySb.append("\n");
 
         IntStream.range(0, data.length).forEach(row -> {
-                bodySb.append(rowLabel + String.format("%02d, row") + " |");
+                bodySb.append(String.format("%s %02d |", rowLabel, row));
                 IntStream.range(0, data[0].length).forEach(column -> {
-//                    IntStream.range(0, 1 - (int)(data[row][column] / 10)).forEach(x -> bodySb.append(" "));
-
-                    if (data[row][column] >= 0) {
-                        bodySb.append("   " + (int)(data[row][column]));
-                    }
-                    else {
-                        bodySb.append(" " + (int)(data[row][column]));
-                    }
+                    double value = data[row][column];
+                    bodySb.append(String.format("%s%d", value >= 0 ? "  " : " ", (int)value));
                 });
                 bodySb.append("\n");
         });
