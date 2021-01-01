@@ -177,8 +177,8 @@ public class Matrix {
     public String toString(String columnLabel, String rowLabel) {
         StringBuilder headingSb = new StringBuilder();
 
-        headingSb.append("   |");
-        IntStream.range(0, data[0].length).forEach(x -> headingSb.append(String.format(" %s%2d", columnLabel, x)));
+        headingSb.append(String.format("   %s |", columnLabel));
+        IntStream.range(0, data[0].length).forEach(x -> headingSb.append(String.format("%3d", x)));
         headingSb.append("\n");
 
         StringBuilder bodySb = new StringBuilder();
