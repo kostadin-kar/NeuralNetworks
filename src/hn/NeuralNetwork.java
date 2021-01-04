@@ -11,6 +11,17 @@ public class NeuralNetwork {
 
     public Matrix getWeightMatrix() { return weightMatrix; }
 
+    public void getEnergy(double[] pattern) {
+        double energy = 0;
+        for (int row = 0; row < weightMatrix.getData().length; row++) {
+            for (int col = 0; col < weightMatrix.getData()[row].length; col++) {
+                energy -= weightMatrix.getData()[row][col] * pattern[row] * pattern[col];
+            }
+        }
+
+        System.out.println("Energy is " + energy);
+    }
+
     public void train(double[] input) {
         double[] bipolarInput = toBipolar(input);
         Matrix bipolarMatrix = Matrix.toRowMatrix(bipolarInput);
@@ -20,7 +31,7 @@ public class NeuralNetwork {
 
         String previousWeightMatrix = weightMatrix.toString("N", "N");
         weightMatrix = weightMatrix.add(subtractMatrix);
-
+        getEnergy(input);
         if (Main.verboseMode) {
             StringBuilder builder = new StringBuilder();
             builder.append("<-- Calculate Contribution Matrix -->") //
@@ -59,11 +70,12 @@ public class NeuralNetwork {
                 System.out.println(String.format(" %.1f  %s", dotProductResult, dotProductResult > 0 ? "> 0  ==>  1" : "<= 0  ==>  0"));
             }
         });
+        getEnergy(input);
 
         return output;
     }
 
-    static double[] toBipolar(double[] pattern) {
+    public static double[] toBipolar(double[] pattern) {
         double[] bipolarPattern = new double[pattern.length];
         IntStream.range(0, pattern.length).forEach(row -> {
             bipolarPattern[row] = pattern[row] == 0 ? -1.0 : 1.0;

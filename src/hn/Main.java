@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.text.StringCharacterIterator;
 
 public class Main {
-    static final int NUM_OF_ROWS_IN_DRAWING_BOARD = 5;
+    static final int NUM_OF_ROWS_IN_DRAWING_BOARD = 9;
     public static boolean verboseMode = false;
 
     public static void main(String[] args) throws IOException {
@@ -63,7 +63,7 @@ public class Main {
         System.out.println("Done training on above pattern");
     }
 
-    static double[] getInput(StringCharacterIterator iterator, int size) {
+    public static double[] getInput(StringCharacterIterator iterator, int size) {
         double[] input = new double[size];
         while (iterator.getIndex() < iterator.getEndIndex()) {
             input[iterator.getIndex()] = Double.parseDouble(String.valueOf(iterator.current()));
